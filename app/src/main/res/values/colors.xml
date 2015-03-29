@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="darkprimary" type="color">#303F9F</item>
+    <item name="primary" type="color">#3F51B5</item>
+    <item name="lightprimary" type="color">#C5CAE9</item>
+    <item name="texticons" type="color">#FFFFFF</item>
+    <item name="accent" type="color">#FF4081</item>
+    <item name="primarytext" type="color">#212121</item>
+    <item name="secondarytext" type="color">#727272</item>
+    <item name="divider" type="color">#B6B6B6</item>
+
+
+
+    <integer-array name="androidcolors">
+        <item>@color/darkprimary</item>
+        <item>@color/primary</item>
+        <item>@color/lightprimary</item>
+        <item>@color/texticons</item>
+        <item>@color/accent</item>
+        <item>@color/primarytext</item>
+        <item>@color/secondarytext</item>
+        <item>@color/divider</item>
+    </integer-array>
+
+</resources> 
