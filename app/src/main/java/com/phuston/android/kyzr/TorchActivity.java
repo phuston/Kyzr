@@ -82,6 +82,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
             String TorchID=new String(msg.getRecords()[0].getPayload());
 
             torchfrag.addTorch(TorchID);
+            //TODO: Make post request to server here. At this point, the server will switch the database
         }
     }
 
