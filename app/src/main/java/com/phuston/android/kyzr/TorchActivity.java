@@ -10,7 +10,6 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,7 +22,7 @@ import java.nio.charset.Charset;
  * Created by phuston on 1/30/15.
  */
 public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private static final String MIME_TYPE="application/com.phuston.android.beamer";
+    private static final String MIME_TYPE="application/com.phuston.android.kyzr";
     private NfcAdapter mNfcAdapter=null;
     private TorchFragment torchfrag=null;
 
@@ -32,15 +31,14 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
      */
     protected GoogleApiClient mGoogleApiClient;
 
-    protected static final String TAG = "basic-location-sample";
+    protected static final String TAG = "kyzr_location_tag";
 
     /**
      * Represents a geographical location.
      */
     protected Location mLastLocation;
 
-    protected TextView mLatitudeText;
-    protected TextView mLongitudeText;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +97,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 new NdefMessage(
                         new NdefRecord[] {
                                 uriRecord,
-                                NdefRecord.createApplicationRecord("com.phuston.android.beamer") });
+                                NdefRecord.createApplicationRecord("com.phuston.android.kyzr") });
 
         return(msg);
     }
@@ -152,12 +150,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // updates. Gets the best and most recent location currently available, which may be null
         // in rare cases when a location is not available.
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-        } else {
-            Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
-        }
+        torchfrag.updateLocation(mLastLocation);
     }
 
     @Override
