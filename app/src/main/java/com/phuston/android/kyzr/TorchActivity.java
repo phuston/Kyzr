@@ -26,16 +26,9 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     private NfcAdapter mNfcAdapter;
     private TorchFragment torchfrag;
 
-    /**
-     * Provides the entry point to Google Play services.
-     */
     protected GoogleApiClient mGoogleApiClient;
 
     protected static final String TAG = "kyzr_location_tag";
-
-    /**
-     * Represents a geographical location.
-     */
     protected Location mLastLocation;
 
 
@@ -80,7 +73,9 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
             String TorchID=new String(msg.getRecords()[0].getPayload());
 
             torchfrag.addTorch(TorchID);
-            //TODO: Make post request to server here. At this point, the server will switch the database
+
+            //TODO: Send data (ID recieved, own phone ID, double latitude, double longitude)
+            //TODO: Make post request to server here. At this point, the server will modify the database
         }
     }
 
