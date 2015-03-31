@@ -23,8 +23,8 @@ import java.nio.charset.Charset;
  */
 public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String MIME_TYPE="application/com.phuston.android.kyzr";
-    private NfcAdapter mNfcAdapter=null;
-    private TorchFragment torchfrag=null;
+    private NfcAdapter mNfcAdapter;
+    private TorchFragment torchfrag;
 
     /**
      * Provides the entry point to Google Play services.
@@ -44,8 +44,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_torch);
-
-        //TODO: connect latitude and longitude textviews
 
         torchfrag=(TorchFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
 
@@ -71,6 +69,8 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 handleIntent(getIntent());
             }
         });
+
+        buildGoogleApiClient();
     }
 
     private void handleIntent(Intent i) {
@@ -108,6 +108,20 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // Check to see that the Activity started due to an Android Beam
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
     }
 
