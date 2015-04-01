@@ -8,14 +8,11 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class TorchFragment extends Fragment {
-    private static final String TAG = "SleepOptionsFragment";
-    private Button mSleepNowButton;
     private TextView mIDTextview;
     private TextView mRecievedIDs;
     private String android_id;
@@ -34,26 +31,18 @@ public class TorchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_torch, parent, false);
 
-        mIDTextview  = (TextView)v.findViewById(R.id.IDTextview);
+        mIDTextview = (TextView) v.findViewById(R.id.IDTextview);
         mIDTextview.setText(android_id);
 
-        mRecievedIDs = (TextView)v.findViewById(R.id.RecievedIDsTextview);
+        mRecievedIDs = (TextView) v.findViewById(R.id.RecievedIDsTextview);
 
-        mLatitudeText = (TextView)v.findViewById(R.id.LatitudeTextview);
-        mLongitudeText = (TextView)v.findViewById(R.id.LongitudeTextview);
+        mLatitudeText = (TextView) v.findViewById(R.id.LatitudeTextview);
+        mLongitudeText = (TextView) v.findViewById(R.id.LongitudeTextview);
 
         return v;
     }
 
-    public void addTorch(String ID){
-        mRecievedIDs.setText(mRecievedIDs.getText() + "\n" + ID);
-    }
-
-    public String getTorchID(){
-        return android_id;
-    }
-
-    public void updateLocation(Location lastLocation){
+    public void updateLocation(Location lastLocation) {
         if (lastLocation != null) {
             mLatitudeText.setText(String.valueOf(lastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(lastLocation.getLongitude()));
@@ -62,8 +51,12 @@ public class TorchFragment extends Fragment {
         }
     }
 
-    TorchActivity getContract() {
-        return((TorchActivity)getActivity());
+    public void addTorch(String ID) {
+        mRecievedIDs.setText(mRecievedIDs.getText() + "\n" + ID);
+    }
+
+    public String getTorchID() {
+        return android_id;
     }
 
 }
