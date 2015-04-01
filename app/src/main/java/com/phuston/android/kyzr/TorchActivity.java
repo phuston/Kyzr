@@ -32,7 +32,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     protected Location mLastLocation;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,26 +56,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
-        findViewById(R.id.fragmentContainer).post(new Runnable() {
-            public void run() {
-                handleIntent(getIntent());
-            }
-        });
-
         buildGoogleApiClient();
-    }
-
-    private void handleIntent(Intent i) {
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(i.getAction())) {
-            Parcelable[] rawMsgs=i.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            NdefMessage msg=(NdefMessage)rawMsgs[0];
-            String TorchID=new String(msg.getRecords()[0].getPayload());
-
-            torchfrag.addTorch(TorchID);
-
-            //TODO: Send data (ID recieved, own phone ID, double latitude, double longitude)
-            //TODO: Make post request to server here. At this point, the server will modify the database
-        }
     }
 
     @Override
@@ -97,28 +77,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         return(msg);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Check to see that the Activity started due to an Android Beam
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-        }
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
 
     @Override
     public void onNewIntent(Intent intent) {
@@ -135,6 +94,9 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         String TorchID=new String(msg.getRecords()[0].getPayload());
 
         torchfrag.addTorch(TorchID);
+
+        //TODO: Send data (ID recieved, own phone ID, double latitude, double longitude)
+        //TODO: Make post request to server here. At this point, the server will modify the database
     }
 
 
@@ -149,9 +111,8 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 .build();
     }
 
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
+
+    //Google Play GPS Client methods
     @Override
     public void onConnected(Bundle connectionHint) {
         // Provides a simple way of getting a device's location and is well suited for
@@ -176,5 +137,31 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // attempt to re-establish the connection.
         Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
+    }
+
+
+    //Overriding activity lifecycle methods
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Check to see that the Activity started due to an Android Beam
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processIntent(getIntent());
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 }
