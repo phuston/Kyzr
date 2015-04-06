@@ -1,8 +1,11 @@
 package com.phuston.android.kyzr;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -139,6 +142,13 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         mGoogleApiClient.connect();
     }
 
+    // TODO: Implement this so transaction can only occur if user has network
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     //Overriding activity lifecycle methods
 
@@ -146,8 +156,16 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onResume() {
         super.onResume();
         // Check to see that the Activity started due to an Android Beam
+        mGoogleApiClient.connect();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
     }
 

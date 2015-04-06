@@ -43,6 +43,7 @@ public class TorchFragment extends Fragment {
     }
 
     public void updateLocation(Location lastLocation) {
+        // TODO: Connect this to some animation rather than textviews
         if (lastLocation != null) {
             mLatitudeText.setText(String.valueOf(lastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(lastLocation.getLongitude()));
