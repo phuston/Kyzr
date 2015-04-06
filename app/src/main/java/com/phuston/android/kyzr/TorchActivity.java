@@ -156,18 +156,11 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onResume() {
         super.onResume();
         // Check to see that the Activity started due to an Android Beam
-        mGoogleApiClient.connect();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
     }
 
-    @Override
-    public void onPause() {
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
 
     @Override
     public void onStart() {
