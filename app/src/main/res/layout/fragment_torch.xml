@@ -41,7 +41,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/torchImage"
             android:layout_gravity="center_horizontal"
-            android:scaleType="7"
             android:src="@drawable/torch" />
 
         <TextView
