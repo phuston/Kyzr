@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               tools:context="com.phuston.android.sleepme.SleepOptionsFragment"
-              android:background="@color/primary">
+              android:background="@color/accent">
 
 
     <LinearLayout
@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/torchImage"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/torch.png" />
+            android:scaleType="7"
+            android:src="@drawable/torch" />
 
         <TextView
             android:id="@+id/LatitudeTextview"
