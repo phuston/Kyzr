@@ -85,6 +85,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     @Override
     public void onNewIntent(Intent intent) {
         // onResume gets called after this to handle the intent
+        Log.i(TAG, "onNewIntent called");
         setIntent(intent);
     }
 
@@ -92,6 +93,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
      * Parses the NDEF Message from the intent and prints to the TextView
      */
     void processIntent(Intent intent) {
+        Toast.makeText(this, "INTENT PROCESSED", Toast.LENGTH_LONG).show();
         Parcelable[] rawMsgs=intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         NdefMessage msg=(NdefMessage)rawMsgs[0];
         String TorchID=new String(msg.getRecords()[0].getPayload());
@@ -157,6 +159,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         super.onResume();
         // Check to see that the Activity started due to an Android Beam
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            Toast.makeText(this, "I'm getting the intent!", Toast.LENGTH_LONG).show();
             processIntent(getIntent());
         }
     }
