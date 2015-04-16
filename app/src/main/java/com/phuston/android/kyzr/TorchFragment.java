@@ -15,7 +15,7 @@ import android.widget.Toast;
 public class TorchFragment extends Fragment {
     private TextView mIDTextview;
     private TextView mRecievedIDs;
-    private String android_id;
+    private String mAndroid_id;
 
     protected TextView mLatitudeText;
     protected TextView mLongitudeText;
@@ -24,7 +24,7 @@ public class TorchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.beamer_title);
-        android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        mAndroid_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TorchFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_torch, parent, false);
 
         mIDTextview = (TextView) v.findViewById(R.id.IDTextview);
-        mIDTextview.setText(android_id);
+        mIDTextview.setText(mAndroid_id);
 
         mRecievedIDs = (TextView) v.findViewById(R.id.RecievedIDsTextview);
 
@@ -53,11 +53,11 @@ public class TorchFragment extends Fragment {
     }
 
     public void addTorch(String ID) {
-        mRecievedIDs.setText(mRecievedIDs.getText() + "\n" + ID);
+        mRecievedIDs.setText(ID);
     }
 
     public String getTorchID() {
-        return android_id;
+        return mAndroid_id;
     }
 
 }
