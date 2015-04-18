@@ -20,6 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.nio.charset.Charset;
+import java.sql.Time;
 
 /**
  * Created by phuston on 1/30/15.
@@ -63,44 +64,42 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     }
 
 
+    /**
+     * Implementation for the CreateNdefMessageCallback interface
+     */
     @Override
-    public NdefMessage createNdefMessage(NfcEvent arg0) {
-        NdefRecord uriRecord=
-                new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
-                        MIME_TYPE.getBytes(Charset.forName("US-ASCII")),
-                        new byte[0],
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        String text = torchfrag.getTorchID();
 
-                        torchfrag.getTorchID()
-                                .getBytes(Charset.forName("US-ASCII")));
-        NdefMessage msg=
-                new NdefMessage(
-                        new NdefRecord[] {
-                                uriRecord,
-                                NdefRecord.createApplicationRecord("application/com.phuston.android.kyzr") });
-
-        return(msg);
+        NdefMessage msg = new NdefMessage(NdefRecord.createMime(
+                "application/com.phuston.android.kyzr", text.getBytes())
+                /**
+                 * The Android Application Record (AAR) is commented out. When a device
+                 * receives a push with an AAR in it, the application specified in the AAR
+                 * is guaranteed to run. The AAR overrides the tag dispatch system.
+                 * You can add it back in to guarantee that this
+                 * activity starts when receiving a beamed message. For now, this code
+                 * uses the tag dispatch system.
+                 */
+                //,NdefRecord.createApplicationRecord("com.example.android.beam")
+        );
+        return msg;
     }
 
 
-    @Override
-    public void onNewIntent(Intent intent) {
-        // onResume gets called after this to handle the intent
-        setIntent(intent);
-    }
 
     /**
      * Parses the NDEF Message from the intent and prints to the TextView
      */
     void processIntent(Intent intent) {
-        Parcelable[] rawMsgs=intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        NdefMessage msg=(NdefMessage)rawMsgs[0];
-        String TorchID=new String(msg.getRecords()[0].getPayload());
-
-        torchfrag.addTorch(TorchID);
-
-        //TODO: Send data (ID recieved, own phone ID, double latitude, double longitude)
-        //TODO: Make post request to server here. At this point, the server will modify the database
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+                NfcAdapter.EXTRA_NDEF_MESSAGES);
+        // only one message sent during the beam
+        NdefMessage msg = (NdefMessage) rawMsgs[0];
+        // record 0 contains the MIME type, record 1 is the AAR, if present
+        torchfrag.addTorch(new String(msg.getRecords()[0].getPayload()));
     }
+
 
 
     /**
@@ -157,9 +156,14 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         super.onResume();
         // Check to see that the Activity started due to an Android Beam
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            torchfrag.addTorch("CHANGEID@#JFIODS");
             processIntent(getIntent());
         }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        // onResume gets called after this to handle the intent
+        setIntent(intent);
     }
 
 
