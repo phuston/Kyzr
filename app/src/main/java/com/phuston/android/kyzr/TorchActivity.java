@@ -73,6 +73,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         } catch (MalformedURLException e) {
             client = null;
         }
+
     }
 
 
@@ -124,6 +125,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 AccessThread at = new AccessThread();
                 String returnMessage = at.execute(formatURL).get();
 
+                getIntent().setAction("android.intent.action.MAIN");
                 Toast.makeText(this, returnMessage, Toast.LENGTH_LONG).show();
 
             } catch(Exception e ) {
@@ -196,6 +198,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onResume() {
         super.onResume();
         // Check to see that the Activity started due to an Android Beam
+        Toast.makeText(this, getIntent().getAction(), Toast.LENGTH_LONG).show();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
@@ -231,7 +234,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 try {
                     return client.access(request);
                 } catch (IOException e) {
-                    return "Could not connect";
+                    return e.toString();
                 }
             }
 
