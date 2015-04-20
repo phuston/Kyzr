@@ -10,6 +10,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -17,8 +18,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.sql.Time;
 
@@ -31,6 +35,8 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     private TorchFragment torchfrag;
 
     protected GoogleApiClient mGoogleApiClient;
+
+    private NetworksClient client;
 
     protected static final String TAG = "kyzr_location_tag";
     protected Location mLastLocation;
@@ -61,6 +67,13 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
         buildGoogleApiClient();
+
+        try {
+            client = new NetworksClient();
+        } catch (MalformedURLException e) {
+            client = null;
+        }
+
     }
 
 
@@ -98,6 +111,28 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
         torchfrag.addTorch(new String(msg.getRecords()[0].getPayload()));
+
+        // TODO Network Shit.
+        if(client != null) {
+            String receivedId = new String(msg.getRecords()[0].getPayload());
+            String phoneId = torchfrag.getTorchID();
+            double lat = mLastLocation.getLatitude();
+            double lng = mLastLocation.getLongitude();
+
+            try {
+                String formatURL = client.formatRequest(phoneId, receivedId, lat, lng);
+
+                AccessThread at = new AccessThread();
+                String returnMessage = at.execute(formatURL).get();
+
+                getIntent().setAction("android.intent.action.MAIN");
+                Toast.makeText(this, returnMessage, Toast.LENGTH_LONG).show();
+
+            } catch(Exception e ) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 
 
@@ -111,6 +146,14 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
+
+
+    protected void createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
 
@@ -155,6 +198,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onResume() {
         super.onResume();
         // Check to see that the Activity started due to an Android Beam
+        Toast.makeText(this, getIntent().getAction(), Toast.LENGTH_LONG).show();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
@@ -178,6 +222,23 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
+        }
+    }
+
+    public class AccessThread extends AsyncTask<String, Void, String> {
+
+        public String doInBackground(String... params) {
+
+            if(client != null) {
+                String request = params[0];
+                try {
+                    return client.access(request);
+                } catch (IOException e) {
+                    return e.toString();
+                }
+            }
+
+            return "Request Failed";
         }
     }
 }
