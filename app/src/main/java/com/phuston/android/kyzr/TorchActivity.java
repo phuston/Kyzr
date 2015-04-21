@@ -159,7 +159,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // record 0 contains the MIME type, record 1 is the AAR, if present
         torchfrag.addTorch(new String(msg.getRecords()[0].getPayload()));
 
-        // TODO Network Shit.
         if(client != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
             String phoneId = torchfrag.getTorchID();
@@ -185,8 +184,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
     /**
      * Updates fields based on data stored in the bundle.
-     *
-     * @param savedInstanceState The activity state saved in the Bundle.
      */
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         Log.i(TAG, "Updating values from bundle");
@@ -225,8 +222,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
                 .build();
         createLocationRequest();
     }
-
-
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
