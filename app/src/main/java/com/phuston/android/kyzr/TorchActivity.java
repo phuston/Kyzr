@@ -16,24 +16,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -49,46 +41,23 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
     protected static final String TAG = "kyzr_location_tag";
 
-    /**
-     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
-     */
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    /**
-     * The fastest rate for active location updates. Exact. Updates will never be more frequent
-     * than this value.
-     */
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     // Keys for storing activity state in the Bundle.
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-    /**
-     * Provides the entry point to Google Play services.
-     */
+
     protected GoogleApiClient mGoogleApiClient;
-    /**
-     * Stores parameters for requests to the FusedLocationProviderApi.
-     */
     protected LocationRequest mLocationRequest;
-    /**
-     * Represents a geographical location.
-     */
     protected Location mCurrentLocation;
-    /**
-     * Tracks the status of the location updates request. Value changes when the user presses the
-     * Start Updates and Stop Updates buttons.
-     */
     protected Boolean mRequestingLocationUpdates;
-    /**
-     * Time when the location was updated represented as a String.
-     */
     protected String mLastUpdateTime;
 
     private Boolean mHasFlash;
     private Boolean mIsFlashOn;
     private Camera mCamera;
     private Camera.Parameters mParams;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,7 +105,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
     }
 
-
     /**
      * Implementation for the CreateNdefMessageCallback interface
      */
@@ -145,21 +113,11 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         String text = mTorchFrag.getTorchID();
 
         NdefMessage msg = new NdefMessage(NdefRecord.createMime(
-                "application/com.phuston.android.kyzr", text.getBytes())
-                /**
-                 * The Android Application Record (AAR) is commented out. When a device
-                 * receives a push with an AAR in it, the application specified in the AAR
-                 * is guaranteed to run. The AAR overrides the tag dispatch system.
-                 * You can add it back in to guarantee that this
-                 * activity starts when receiving a beamed message. For now, this code
-                 * uses the tag dispatch system.
-                 */
-                //,NdefRecord.createApplicationRecord("com.example.android.beam")
+                MIME_TYPE, text.getBytes())
+                ,NdefRecord.createApplicationRecord("com.phuston.android.kyzr")
         );
         return msg;
     }
-
-
 
     /**
      * Parses the NDEF Message from the intent and prints to the TextView
@@ -197,7 +155,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
     }
 
-
     /**
      * Updates fields based on data stored in the bundle.
      */
@@ -209,10 +166,8 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
             if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean(
                         REQUESTING_LOCATION_UPDATES_KEY);
-                //setButtonsEnabledState();
             }
-            // Update the value of mCurrentLocation from the Bundle and update the UI to show the
-            // correct latitude and longitude.
+            // Update the value of mCurrentLocation from the Bundle
             if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
                 // Since LOCATION_KEY was found in the Bundle, we can be sure that mCurrentLocation
                 // is not null.
@@ -224,7 +179,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
             }
         }
     }
-
 
     /**
      * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
@@ -246,7 +200,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-
     /**
      * Requests location updates from the FusedLocationApi.
      */
@@ -260,7 +213,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
-
 
     /**
      * Runs when a GoogleApiClient object successfully connects.
@@ -296,7 +248,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
-
     @Override
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason. We call connect() to
@@ -313,8 +264,9 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    //Methods for camera flashlight control
-
+    /**
+     * Methods for flashlight control
+     */
     private void turnFlashlightOn() {
         mParams = mCamera.getParameters();
         mParams.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
@@ -358,7 +310,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // onResume gets called after this to handle the intent
         setIntent(intent);
     }
-
 
     @Override
     public void onStart() {
