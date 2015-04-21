@@ -43,7 +43,7 @@ import java.util.Date;
 public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String MIME_TYPE="application/com.phuston.android.kyzr";
     private NfcAdapter mNfcAdapter;
-    private TorchFragment torchfrag;
+    private TorchFragment mTorchFrag;
 
     private NetworksClient mNetworkClient;
 
@@ -87,7 +87,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     private Boolean mHasFlash;
     private Boolean mIsFlashOn;
     private Camera mCamera;
-    Camera.Parameters params;
+    private Camera.Parameters mParams;
 
 
     @Override
@@ -95,13 +95,13 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_torch);
 
-        torchfrag=(TorchFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
+        mTorchFrag=(TorchFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
 
-        if (torchfrag == null) {
-            torchfrag=new TorchFragment();
+        if (mTorchFrag == null) {
+            mTorchFrag=new TorchFragment();
 
             getFragmentManager().beginTransaction()
-                    .add(R.id.fragmentContainer, torchfrag)
+                    .add(R.id.fragmentContainer, mTorchFrag)
                     .commit();
         }
 
@@ -131,7 +131,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
         if(mHasFlash) {
             mCamera = Camera.open();
-            params = mCamera.getParameters();
+            mParams = mCamera.getParameters();
         }
 
     }
@@ -142,7 +142,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
      */
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        String text = torchfrag.getTorchID();
+        String text = mTorchFrag.getTorchID();
 
         NdefMessage msg = new NdefMessage(NdefRecord.createMime(
                 "application/com.phuston.android.kyzr", text.getBytes())
@@ -170,13 +170,13 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
-        torchfrag.addTorch(new String(msg.getRecords()[0].getPayload()));
+        mTorchFrag.addTorch(new String(msg.getRecords()[0].getPayload()));
 
         turnFlashlightOn();
 
         if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
-            String phoneId = torchfrag.getTorchID();
+            String phoneId = mTorchFrag.getTorchID();
             double lat = mCurrentLocation.getLatitude();
             double lng = mCurrentLocation.getLongitude();
 
@@ -271,7 +271,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            torchfrag.updateLocation(mCurrentLocation);
+            mTorchFrag.updateLocation(mCurrentLocation);
         }
 
         if (mRequestingLocationUpdates) {
@@ -286,7 +286,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        torchfrag.updateLocation(mCurrentLocation);
+        mTorchFrag.updateLocation(mCurrentLocation);
     }
 
     @Override
@@ -316,16 +316,16 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     //Methods for camera flashlight control
 
     private void turnFlashlightOn() {
-        params = mCamera.getParameters();
-        params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        mCamera.setParameters(params);
+        mParams = mCamera.getParameters();
+        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        mCamera.setParameters(mParams);
         mCamera.startPreview();
         mIsFlashOn = true;
     }
 
     private void turnFlashlightOff() {
-        params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-        mCamera.setParameters(params);
+        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        mCamera.setParameters(mParams);
         mCamera.stopPreview();
         mIsFlashOn = false;
     }
