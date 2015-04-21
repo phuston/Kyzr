@@ -108,7 +108,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
-        mRequestingLocationUpdates = false;
+        mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
         updateValuesFromBundle(savedInstanceState);
@@ -232,26 +232,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
 
     /**
-     * Handles the Start Updates button and requests start of location updates. Does nothing if
-     * updates have already been requested.
-     */
-    public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = true;
-            startLocationUpdates();
-        }
-    }
-    /**
-     * Handles the Stop Updates button, and requests removal of location updates. Does nothing if
-     * updates were not previously requested.
-     */
-    public void stopUpdatesButtonHandler(View view) {
-        if (mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = false;
-            stopLocationUpdates();
-        }
-    }
-    /**
      * Requests location updates from the FusedLocationApi.
      */
     protected void startLocationUpdates() {
@@ -275,7 +255,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            // TODO: Update location here
+            torchfrag.updateLocation(mCurrentLocation);
         }
 
         if (mRequestingLocationUpdates) {
@@ -290,6 +270,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        torchfrag.updateLocation(mCurrentLocation);
     }
 
     @Override
@@ -326,7 +307,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
             startLocationUpdates();
         }
         // Check to see that the Activity started due to an Android Beam
-        Toast.makeText(this, getIntent().getAction(), Toast.LENGTH_LONG).show();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
