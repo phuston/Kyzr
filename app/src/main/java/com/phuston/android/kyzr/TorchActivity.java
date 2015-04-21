@@ -3,6 +3,8 @@ package com.phuston.android.kyzr;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,6 +30,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.sql.Time;
@@ -42,7 +45,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     private NfcAdapter mNfcAdapter;
     private TorchFragment torchfrag;
 
-    private NetworksClient client;
+    private NetworksClient mNetworkClient;
 
     protected static final String TAG = "kyzr_location_tag";
     protected Location mLastLocation;
@@ -82,6 +85,10 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
      */
     protected String mLastUpdateTime;
 
+    private Boolean mHasFlash;
+    private Boolean mIsFlashOn;
+    private Camera mCamera;
+    Camera.Parameters params;
 
 
     @Override
@@ -116,9 +123,16 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         buildGoogleApiClient();
 
         try {
-            client = new NetworksClient();
+            mNetworkClient = new NetworksClient();
         } catch (MalformedURLException e) {
-            client = null;
+            mNetworkClient = null;
+        }
+
+        mHasFlash = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
+        if(mHasFlash) {
+            mCamera = Camera.open();
+            params = mCamera.getParameters();
         }
 
     }
@@ -159,14 +173,16 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         // record 0 contains the MIME type, record 1 is the AAR, if present
         torchfrag.addTorch(new String(msg.getRecords()[0].getPayload()));
 
-        if(client != null) {
+        turnFlashlightOn();
+
+        if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
             String phoneId = torchfrag.getTorchID();
             double lat = mLastLocation.getLatitude();
             double lng = mLastLocation.getLongitude();
 
             try {
-                String formatURL = client.formatRequest(phoneId, receivedId, lat, lng);
+                String formatURL = mNetworkClient.formatRequest(phoneId, receivedId, lat, lng);
 
                 AccessThread at = new AccessThread();
                 String returnMessage = at.execute(formatURL).get();
@@ -177,6 +193,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
             } catch(Exception e ) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
+            turnFlashlightOff();
         }
 
     }
@@ -297,6 +314,23 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    //Methods for camera flashlight control
+
+    private void turnFlashlightOn() {
+        params = mCamera.getParameters();
+        params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        mCamera.setParameters(params);
+        mCamera.startPreview();
+        mIsFlashOn = true;
+    }
+
+    private void turnFlashlightOff() {
+        params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        mCamera.setParameters(params);
+        mCamera.stopPreview();
+        mIsFlashOn = false;
+    }
+
     //Overriding activity lifecycle methods
 
     @Override
@@ -339,6 +373,10 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
     }
 
     /**
@@ -355,10 +393,10 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
         public String doInBackground(String... params) {
 
-            if(client != null) {
+            if(mNetworkClient != null) {
                 String request = params[0];
                 try {
-                    return client.access(request);
+                    return mNetworkClient.access(request);
                 } catch (IOException e) {
                     return e.toString();
                 }
