@@ -54,8 +54,8 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     protected Boolean mRequestingLocationUpdates;
     protected String mLastUpdateTime;
 
-    private Boolean mHasFlash;
-    private Boolean mIsFlashOn;
+    private boolean mHasFlash;
+    private boolean mIsFlashOn;
     private Camera mCamera;
     private Camera.Parameters mParams;
 
