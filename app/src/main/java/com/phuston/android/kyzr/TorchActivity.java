@@ -48,7 +48,6 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
     private NetworksClient mNetworkClient;
 
     protected static final String TAG = "kyzr_location_tag";
-    protected Location mLastLocation;
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -178,8 +177,8 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
         if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
             String phoneId = torchfrag.getTorchID();
-            double lat = mLastLocation.getLatitude();
-            double lng = mLastLocation.getLongitude();
+            double lat = mCurrentLocation.getLatitude();
+            double lng = mCurrentLocation.getLongitude();
 
             try {
                 String formatURL = mNetworkClient.formatRequest(phoneId, receivedId, lat, lng);
