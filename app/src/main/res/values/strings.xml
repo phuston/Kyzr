@@ -7,8 +7,7 @@
     <string name="recieved_ids">Your IDs:</string>
     <string name="no_location_detected">No location detected.</string>
 
-    <string name="latitude_default">Latitude</string>
-    <string name="longitude_default">Longitude</string>
-
     <string name="torch_description">Torch Image</string>
+    <string name="title_activity_help">Help</string>
+    <string name="help_text">To use Kyzr: Find a friend with an NFC-compatible Android device. Open up Kyzr. Tap the back of your phones together. Revel in the glory of having swapped torches. Profit.</string>
 </resources>

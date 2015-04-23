@@ -3,6 +3,7 @@ package com.phuston.android.kyzr;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -21,6 +22,8 @@ public class TorchFragment extends Fragment {
     private String mAndroid_id;
     private Toolbar mToolbar;
 
+    private FloatingActionButton mFloatActButton;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,17 @@ public class TorchFragment extends Fragment {
 
         mToolbar = (Toolbar)(v.findViewById(R.id.tool_bar));
         ((ActionBarActivity)getActivity()).setSupportActionBar(mToolbar);
+
+        mFloatActButton = (FloatingActionButton)v.findViewById(R.id.float_act_button);
+
+        mFloatActButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), HelpActivity.class);
+                startActivity(i);
+            }
+        });
+
         return v;
     }
 
