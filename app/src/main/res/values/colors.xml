@@ -9,6 +9,8 @@
     <item name="secondarytext" type="color">#727272</item>
     <item name="divider" type="color">#B6B6B6</item>
     <item name="edittextback" type="color">#FFFF</item>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
 
 
 

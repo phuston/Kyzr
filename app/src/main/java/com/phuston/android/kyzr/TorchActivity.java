@@ -15,6 +15,7 @@ import android.nfc.NfcEvent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,7 +34,7 @@ import java.util.Date;
 /**
  * Created by phuston on 1/30/15.
  */
-public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class TorchActivity extends ActionBarActivity implements NfcAdapter.CreateNdefMessageCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String MIME_TYPE="application/com.phuston.android.kyzr";
     private NfcAdapter mNfcAdapter;
     private TorchFragment mTorchFrag;
