@@ -8,5 +8,5 @@
     <string name="no_location_detected">No location detected.</string>
 
     <string name="torch_description">Torch Image</string>
-    <string name="title_activity_help">HelpActivity</string>
+    <string name="title_activity_help">Help</string>
 </resources>
