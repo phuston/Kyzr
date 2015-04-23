@@ -12,4 +12,29 @@
         layout="@layout/tool_bar"
         ></include>
 
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Icon"
+            android:layout_gravity="left"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:text="Here there will be some text about how to use the app. A short explanation, hopefully this will break to newline"
+            android:layout_gravity="right"
+            android:padding="10dp" />
+
+    </LinearLayout>
 </LinearLayout>
