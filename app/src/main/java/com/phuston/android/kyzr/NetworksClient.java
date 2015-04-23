@@ -17,13 +17,10 @@ import java.net.URLEncoder;
 
 public class NetworksClient {
 
-    private URL sendURL;
-
-    public NetworksClient() throws MalformedURLException {
-        sendURL = new URL("http://www.thekyzrproject.com/dbadd");
+    public NetworksClient() {
     }
 
-    public String access(String query) throws IOException {
+    public String access(String query, URL sendURL) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) sendURL.openConnection();
 
         connection.setDoInput(true);
@@ -47,6 +44,17 @@ public class NetworksClient {
 
         return finalResponse;
 
+    }
+
+    public String formatVerify(String phoneId) throws UnsupportedEncodingException {
+        return "search_id=" + URLEncoder.encode(phoneId, "UTF-8");
+    }
+
+    public String formatAddToDatabase(String phoneId, String username) throws UnsupportedEncodingException {
+        String encodedID = URLEncoder.encode(phoneId, "UTF-8");
+        String encodedUsername = URLEncoder.encode(username, "UTF-8");
+
+        return "pid=" + encodedID + "&username=" + encodedUsername;
     }
 
     public String formatRequest(String id1, String id2, double lat, double lng) throws UnsupportedEncodingException {

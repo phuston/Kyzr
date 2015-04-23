@@ -1,12 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Kyzr</string>
 
+    <string name="app_name">Kyzr</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="beamer_title">Tap to Beam Your ID:</string>
     <string name="recieved_ids">Your IDs:</string>
     <string name="no_location_detected">No location detected.</string>
-
     <string name="latitude_default">Latitude</string>
     <string name="longitude_default">Longitude</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="intro_hint">Enter a name for your torch!</string>
+    <string name="name_denied">Sorry, there is already a torch with that name</string>
+    <string name="intro_button">Submit</string>
+
 </resources>

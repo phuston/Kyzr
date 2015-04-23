@@ -8,6 +8,7 @@
     <item name="primarytext" type="color">#212121</item>
     <item name="secondarytext" type="color">#727272</item>
     <item name="divider" type="color">#B6B6B6</item>
+    <item name="edittextback" type="color">#FFFF</item>
 
 
 

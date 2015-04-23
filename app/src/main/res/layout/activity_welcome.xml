@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.phuston.android.kyzr.WelcomeActivity"
+    android:background="@color/accent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:background="@mipmap/ic_launcher"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:background="@drawable/rectanglebackground"
+        android:id="@+id/relativeLayout">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/etTorchName"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/edittextback"
+            android:hint="@string/intro_hint"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/intro_button"
+        android:id="@+id/bSubmitTorch"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

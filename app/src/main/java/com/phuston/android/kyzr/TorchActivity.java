@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -90,11 +91,7 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
         buildGoogleApiClient();
 
-        try {
-            mNetworkClient = new NetworksClient();
-        } catch (MalformedURLException e) {
-            mNetworkClient = null;
-        }
+        mNetworkClient = new NetworksClient();
 
         mHasFlash = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
@@ -345,9 +342,11 @@ public class TorchActivity extends Activity implements NfcAdapter.CreateNdefMess
 
             if(mNetworkClient != null) {
                 String request = params[0];
+
                 try {
-                    return mNetworkClient.access(request);
-                } catch (IOException e) {
+                    URL sendTo = new URL("http://thekyzrproject.com/dbadd");
+                    return mNetworkClient.access(request, sendTo);
+                } catch(Exception e) {
                     return e.toString();
                 }
             }

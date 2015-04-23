@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.phuston.android.kyzr" >
+    package="com.phuston.android.kyzr" >
 
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.NFC"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -15,28 +15,31 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
-        <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="TorchActivity"
+            android:name=".TorchActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="application/com.phuston.android.kyzr"/>
+                <data android:mimeType="application/com.phuston.android.kyzr" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".WelcomeActivity"
+            android:label="@string/title_activity_welcome" >
         </activity>
     </application>
 
