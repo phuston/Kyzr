@@ -55,7 +55,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             try {
                 response = vt.execute("verify", initialVerify).get();
             } catch(Exception e) {
-                response = e.toString();
+                response = e.getMessage();
             }
 
             if(response.equals("True")) {
@@ -66,7 +66,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
     public void startTorchActivity() {
         try {
-            Intent activityStarter = new Intent(this, Class.forName("TorchActivity"));
+            Intent activityStarter = new Intent(this, Class.forName("com.phuston.android.kyzr.TorchActivity"));
             startActivity(activityStarter);
         } catch (ClassNotFoundException e) {
             Toast.makeText(this, "Could not continue", Toast.LENGTH_LONG).show();
@@ -129,6 +129,8 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
                 } catch (Exception e) {
                     response = e.toString();
                 }
+
+                return response;
             }
 
             return "Error";
