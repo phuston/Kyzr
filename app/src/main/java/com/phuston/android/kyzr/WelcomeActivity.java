@@ -88,7 +88,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
             try {
                 String formattedRequest = mNetworkClient.formatAddToDatabase(mAndroid_id, newUsername);
-                vt.execute("adduser", formattedRequest);
+                response = vt.execute("adduser", formattedRequest).get();
             } catch(Exception e) {
                 response = e.toString();
             }
