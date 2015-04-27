@@ -2,6 +2,7 @@ package com.phuston.android.kyzr;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
@@ -37,9 +38,13 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         mNetworkClient = new NetworksClient();
         mAndroid_id = mTorchFrag.getTorchID();
 
-
-
         checkIfIdExists();
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
 
         mNewUser = (EditText) findViewById(R.id.etTorchName);
         Button submit = (Button) findViewById(R.id.bSubmitTorch);
