@@ -11,18 +11,21 @@
         android:layout_width="192dp"
         android:layout_height="192dp"
         android:id="@+id/imageView"
-        android:background="@mipmap/ic_launcher"
+        android:background="@drawable/welcomeflame"
+        android:focusable="false"
+        android:layout_marginBottom="40dp"
         android:layout_above="@+id/relativeLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"/>
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:padding="10dp"
         android:background="@drawable/rectanglebackground"
-        android:id="@+id/relativeLayout">
+        android:id="@+id/relativeLayout"
+        android:layout_above="@+id/bSubmitTorch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <EditText
             android:layout_width="fill_parent"
@@ -31,7 +34,9 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:background="@color/edittextback"
-            android:hint="@string/intro_hint"/>
+            android:hint="@string/intro_hint"
+            android:gravity="center_horizontal"
+            android:elevation="5dp" />
 
     </RelativeLayout>
 
@@ -40,6 +45,9 @@
         android:layout_height="wrap_content"
         android:text="@string/intro_button"
         android:id="@+id/bSubmitTorch"
-        android:layout_below="@+id/relativeLayout"
+        style="@style/Base.TextAppearance.AppCompat.Button"
+        android:elevation="5dp"
+        android:layout_marginBottom="116dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

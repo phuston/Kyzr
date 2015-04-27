@@ -14,7 +14,7 @@
         ></include>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearlayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >

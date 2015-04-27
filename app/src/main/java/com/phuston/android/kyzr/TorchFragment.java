@@ -53,13 +53,7 @@ public class TorchFragment extends Fragment {
     }
 
     public void updateLocation(Location lastLocation) {
-        // TODO: Connect this to some animation rather than textviews?
-//        if (lastLocation != null) {
-//            mLatitudeText.setText(String.valueOf(lastLocation.getLatitude()));
-//            mLongitudeText.setText(String.valueOf(lastLocation.getLongitude()));
-//        } else {
-//            Toast.makeText(getActivity(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
-//        }
+        //TODO: Implement this
     }
 
     public void addTorch(String ID) {
