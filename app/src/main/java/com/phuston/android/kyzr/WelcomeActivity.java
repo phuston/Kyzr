@@ -23,6 +23,8 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
     private NetworksClient mNetworkClient;
     private String mAndroid_id;
 
+    private TorchFragment mTorchFrag;
+
     private EditText mNewUser;
 
     @Override
@@ -30,8 +32,12 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        mTorchFrag = new TorchFragment();
+
         mNetworkClient = new NetworksClient();
-        mAndroid_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        mAndroid_id = mTorchFrag.getTorchID();
+
+
 
         checkIfIdExists();
 
@@ -61,14 +67,19 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             }
 
             if(response.equals("True")) {
-                startTorchActivity();
+                Bundle extras = new Bundle();
+                extras.putBoolean("Create User", false);
+                startTorchActivity(extras);
             }
         }
     }
 
-    public void startTorchActivity() {
+    public void startTorchActivity(Bundle extras) {
         try {
             Intent activityStarter = new Intent(this, Class.forName("com.phuston.android.kyzr.TorchActivity"));
+            if(extras != null) {
+                activityStarter.putExtras(extras);
+            }
             startActivity(activityStarter);
         } catch (ClassNotFoundException e) {
             Toast.makeText(this, "Could not continue", Toast.LENGTH_LONG).show();
@@ -89,15 +100,19 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             String response = "";
 
             try {
-                String formattedRequest = mNetworkClient.formatAddToDatabase(mAndroid_id, newUsername);
-                response = vt.execute("adduser", formattedRequest).get();
+                // Make Request In Next Activity
+                String formattedRequest = mNetworkClient.formatVerify(newUsername);
+                response = vt.execute("verify", formattedRequest).get();
             } catch(Exception e) {
                 response = e.toString();
             }
 
-            if(response.equals("True")) {
+            if(response.equals("False")) {
                 Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
-                startTorchActivity();
+                Bundle extras = new Bundle();
+                extras.putString("Username", newUsername);
+                extras.putBoolean("Create User", true);
+                startTorchActivity(extras);
             } else {
                 mNewUser.setText("");
                 Toast.makeText(this, "User already exists.", Toast.LENGTH_LONG).show();
