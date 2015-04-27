@@ -27,7 +27,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -35,8 +35,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="application/com.phuston.android.kyzr" />
+
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".WelcomeActivity"
+            android:label="Kyzr">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help" >
