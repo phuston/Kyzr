@@ -101,8 +101,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             mParams = mCamera.getParameters();
         }
 
-        addUser();
-
     }
 
     public void addUser() {
@@ -259,6 +257,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             mTorchFrag.updateLocation(mCurrentLocation);
+            addUser();
         }
 
         if (mRequestingLocationUpdates) {

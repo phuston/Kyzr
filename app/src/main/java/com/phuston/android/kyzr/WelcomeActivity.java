@@ -24,8 +24,6 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
     private NetworksClient mNetworkClient;
     private String mAndroid_id;
 
-    private TorchFragment mTorchFrag;
-
     private EditText mNewUser;
 
     @Override
@@ -33,10 +31,8 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        mTorchFrag = new TorchFragment();
-
         mNetworkClient = new NetworksClient();
-        mAndroid_id = mTorchFrag.getTorchID();
+        mAndroid_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         checkIfIdExists();
 
