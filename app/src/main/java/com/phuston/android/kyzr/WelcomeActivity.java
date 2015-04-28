@@ -34,7 +34,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_welcome);
 
         mNetworkClient = new NetworksClient();
-        mAndroid_id = "alkjdflkajflkda"; //Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        mAndroid_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         checkIfIdExists();
 
