@@ -103,6 +103,20 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
 
     }
 
+    public void getCurrTorch() {
+
+        String response = "";
+        try {
+            String formatted = mNetworkClient.formatGetCurrTorch(mTorchFrag.getTorchID());
+            AccessThread at = new AccessThread();
+
+            response = at.execute("currtorch", formatted).get();
+        } catch (Exception e) {
+            e.toString();
+        }
+        mTorchFrag.updateCurrTorch(response);
+    }
+
     public void addUser() {
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
@@ -329,6 +343,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
+        getCurrTorch();
     }
 
     @Override
@@ -390,6 +405,12 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
                             break;
                         case "create":
                             sendTo = new URL("http://thekyzrproject.com/newuser");
+                            break;
+                        case "stats":
+                            sendTo = new URL("http://thekyzrproject.com/stats");
+                            break;
+                        case "currtorch":
+                            sendTo = new URL("http://thekyzrproject.com/currtorch");
                             break;
                     }
                 } catch (MalformedURLException e) {
