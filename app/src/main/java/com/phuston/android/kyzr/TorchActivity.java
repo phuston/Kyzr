@@ -103,6 +103,41 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
 
     }
 
+    public void addUser() {
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            boolean create = extras.getBoolean("Create User");
+
+            if(create) {
+                double latitude = mCurrentLocation.getLatitude();
+                double longitude = mCurrentLocation.getLongitude();
+
+                String username = extras.getString("Username");
+                String lat = String.valueOf(latitude);
+                String lng = String.valueOf(longitude);
+                String id = mTorchFrag.getTorchID();
+
+                String response = "";
+
+                try {
+                    String formatted = mNetworkClient.formatAddToDatabase(id, username, lat, lng);
+                    AccessThread at = new AccessThread();
+
+                    response = at.execute("create", formatted).get();
+                } catch (Exception e) {
+                    e.toString();
+                }
+
+                if(!response.equals("True")) {
+                    Toast.makeText(this, "Could not create user", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Successful!", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }
+    }
+
     /**
      * Implementation for the CreateNdefMessageCallback interface
      */
@@ -140,7 +175,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
                 String formatURL = mNetworkClient.formatRequest(phoneId, receivedId, lat, lng);
 
                 AccessThread at = new AccessThread();
-                String returnMessage = at.execute(formatURL).get();
+                String returnMessage = at.execute("add", formatURL).get();
 
                 getIntent().setAction("android.intent.action.MAIN");
                 Toast.makeText(this, returnMessage, Toast.LENGTH_LONG).show();
@@ -222,6 +257,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             mTorchFrag.updateLocation(mCurrentLocation);
+            addUser();
         }
 
         if (mRequestingLocationUpdates) {
@@ -342,11 +378,28 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         public String doInBackground(String... params) {
 
             if(mNetworkClient != null) {
-                String request = params[0];
+                String method = params[0];
+                String request = params[1];
+
+                URL sendTo = null;
 
                 try {
-                    URL sendTo = new URL("http://thekyzrproject.com/dbadd");
-                    return mNetworkClient.access(request, sendTo);
+                    switch (method) {
+                        case "add":
+                            sendTo = new URL("http://thekyzrproject.com/dbadd");
+                            break;
+                        case "create":
+                            sendTo = new URL("http://thekyzrproject.com/newuser");
+                            break;
+                    }
+                } catch (MalformedURLException e) {
+                    return "Error Occurred";
+                }
+
+                try {
+                    if(sendTo != null) {
+                        return mNetworkClient.access(request, sendTo);
+                    }
                 } catch(Exception e) {
                     return e.toString();
                 }

@@ -50,11 +50,13 @@ public class NetworksClient {
         return "search_id=" + URLEncoder.encode(phoneId, "UTF-8");
     }
 
-    public String formatAddToDatabase(String phoneId, String username) throws UnsupportedEncodingException {
+    public String formatAddToDatabase(String phoneId, String username, String lat, String lng) throws UnsupportedEncodingException {
         String encodedID = URLEncoder.encode(phoneId, "UTF-8");
         String encodedUsername = URLEncoder.encode(username, "UTF-8");
+        String encodedLat = URLEncoder.encode(lat, "UTF-8");
+        String encodedLng = URLEncoder.encode(lng, "UTF-8");
 
-        return "pid=" + encodedID + "&username=" + encodedUsername;
+        return "pid=" + encodedID + "&username=" + encodedUsername + "&lat=" + encodedLat + "&lng=" + encodedLng;
     }
 
     public String formatRequest(String id1, String id2, double lat, double lng) throws UnsupportedEncodingException {
