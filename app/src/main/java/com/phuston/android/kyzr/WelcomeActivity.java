@@ -26,6 +26,8 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
     private EditText mNewUser;
 
+    private boolean mKillActivity = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +72,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             if(response.equals("True")) {
                 Bundle extras = new Bundle();
                 extras.putBoolean("Create User", false);
+                mKillActivity = true;
                 startTorchActivity(extras);
             }
         }
@@ -89,7 +92,9 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
     public void onPause() {
         super.onPause();
-        finish();
+        if(mKillActivity) {
+            finish();
+        }
     }
 
     public void onClick(View v) {
