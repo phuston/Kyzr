@@ -15,14 +15,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
 
 
 public class TorchFragment extends Fragment {
 
     private String mAndroid_id;
-    private Toolbar mToolbar;
+    protected Toolbar mToolbar;
+    private String mCurrTorchID;
 
-    private FloatingActionButton mFloatActButton;
+    protected FloatingActionButton mFloatActButton;
+    protected TextView mCurrTorchTextview;
 
 
     @Override
@@ -35,6 +38,8 @@ public class TorchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_torch, parent, false);
+
+        mCurrTorchTextview = (TextView)v.findViewById(R.id.currtorch_textview);
 
         mToolbar = (Toolbar)(v.findViewById(R.id.tool_bar));
         ((ActionBarActivity)getActivity()).setSupportActionBar(mToolbar);
@@ -50,6 +55,10 @@ public class TorchFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public void updateCurrTorch(String currTorchID){
+        mCurrTorchTextview.setText("Current torch: " + currTorchID);
     }
 
     public void updateLocation(Location lastLocation) {

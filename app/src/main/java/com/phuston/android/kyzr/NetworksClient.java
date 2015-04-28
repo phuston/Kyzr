@@ -72,4 +72,8 @@ public class NetworksClient {
         return encodedData;
     }
 
+    public String formatGetCurrTorch(String phoneID) throws UnsupportedEncodingException {
+        return "phone_id=" + URLEncoder.encode(phoneID, "UTF-8");
+    }
+
 }

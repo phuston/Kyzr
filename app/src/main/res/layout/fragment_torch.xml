@@ -27,17 +27,31 @@
         android:focusableInTouchMode="false"
         android:paddingTop="40dp" />
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/float_act_button"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        fab:fab_icon="@drawable/ic_fab_star"
-        fab:fab_colorNormal="@color/darkprimary"
-        fab:fab_colorPressed="@color/primary"
-        android:layout_marginBottom="16dp"
-        android:layout_gravity="right"
-        android:paddingRight="10dp"
-        android:cropToPadding="false"
-        android:layout_marginRight="16dp" />
+        android:weightSum="1">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/float_act_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_icon="@drawable/ic_fab_star"
+            fab:fab_colorNormal="@color/darkprimary"
+            fab:fab_colorPressed="@color/primary"
+            android:layout_marginBottom="16dp"
+            android:paddingRight="10dp"
+            android:cropToPadding="false"
+            android:layout_marginRight="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/current_torch"
+            android:id="@+id/currtorch_textview"
+            android:textSize="20sp"
+            android:layout_margin="10dp" />
+    </LinearLayout>
 
 </LinearLayout>
