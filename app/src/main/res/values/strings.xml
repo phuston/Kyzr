@@ -15,6 +15,7 @@
     <string name="intro_button">Submit</string>
     <string name="torch_description">Torch Image</string>
     <string name="title_activity_help">Help</string>
+    <string name="current_torch">Current Torch: </string>
     <string name="help_text">To use Kyzr: Find a friend with an NFC-compatible Android device. Open up Kyzr. Tap the back of your phones together. Revel in the glory of having swapped torches. Profit.</string>
     <string name="about_text">About the Kyzr Team: We\'re a group of first-years studying Electrical and Computer Engineering at Olin College of Engineering in Needham, MA. Direct job offers to patrick@thekyzrproject.com</string>
 </resources>
