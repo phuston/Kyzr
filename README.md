@@ -4,7 +4,7 @@
 ---
 
 # Welcome to The Kyzr Project's Android Repo
-[The Android repo can be found here!](https://github.com/byronwasti/Kyzr-Server)
+[The server repo can be found here!](https://github.com/byronwasti/Kyzr-Server)
 
 ---
 
