@@ -35,24 +35,24 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="application/com.phuston.android.kyzr" />
-
             </intent-filter>
         </activity>
-
         <activity
             android:name=".WelcomeActivity"
-            android:label="Kyzr">
-
+            android:label="Kyzr" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".HelpActivity"
             android:label="@string/title_activity_help" >
+        </activity>
+        <activity
+            android:name=".StatsActivity"
+            android:label="@string/title_activity_stats" >
         </activity>
     </application>
 

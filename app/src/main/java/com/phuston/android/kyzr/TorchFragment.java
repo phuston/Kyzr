@@ -58,7 +58,7 @@ public class TorchFragment extends Fragment {
     }
 
     public void updateCurrTorch(String currTorchID){
-        mCurrTorchTextview.setText("Current torch: " + currTorchID);
+        mCurrTorchTextview.setText("Current torch: \n" + currTorchID);
     }
 
     public void updateLocation(Location lastLocation) {
