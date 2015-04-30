@@ -1,6 +1,8 @@
 package com.phuston.android.kyzr;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -71,8 +73,21 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
                 Bundle extras = new Bundle();
                 extras.putBoolean("Create User", false);
                 startTorchActivity(extras);
+            }  else if(!response.equals("False") && !response.equals("Invalid Search")) {
+                connectionError();
             }
         }
+    }
+
+    public void connectionError() {
+        final AlertDialog at = new AlertDialog.Builder(this).setTitle("Can't Connect to Kyzr")
+                .setMessage("For some reason, there was an error connecting to server. You will be unable to access Kyzr and pass torches. Please try again later.")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
     }
 
     public void startTorchActivity(Bundle extras) {
@@ -114,6 +129,8 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
                 extras.putString("Username", newUsername);
                 extras.putBoolean("Create User", true);
                 startTorchActivity(extras);
+            } else if(!response.equals("False") && !response.equals("Invalid Search")) {
+                connectionError();
             } else {
                 mNewUser.setText("");
                 Toast.makeText(this, "User already exists.", Toast.LENGTH_LONG).show();
