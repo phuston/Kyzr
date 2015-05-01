@@ -54,6 +54,11 @@
             android:name=".HelpActivity"
             android:label="@string/title_activity_help" >
         </activity>
+
+        <activity
+            android:name=".StatsActivity"
+            android:label="@string/title_activity_stats" >
+        </activity>
     </application>
 
 </manifest>

@@ -7,12 +7,10 @@
     tools:context="com.phuston.android.kyzr.TorchFragment"
     android:background="@color/accent"
     android:elevation="5dp">
-
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"
         ></include>
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,11 +25,9 @@
         android:focusableInTouchMode="false"
         android:paddingTop="40dp" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/float_act_button"
@@ -40,18 +36,30 @@
             fab:fab_icon="@drawable/ic_fab_star"
             fab:fab_colorNormal="@color/darkprimary"
             fab:fab_colorPressed="@color/primary"
-            android:layout_marginBottom="16dp"
-            android:paddingRight="10dp"
             android:cropToPadding="false"
-            android:layout_marginRight="16dp" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/current_torch"
-            android:id="@+id/currtorch_textview"
-            android:textSize="20sp"
-            android:layout_margin="10dp" />
-    </LinearLayout>
+            android:id="@+id/currtorchtitle_textview"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/primarytext"
+            android:textSize="20sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currtorch_textview"
+            android:layout_below="@+id/currtorchtitle_textview"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 </LinearLayout>
