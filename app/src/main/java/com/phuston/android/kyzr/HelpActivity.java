@@ -10,15 +10,12 @@ import android.view.MenuItem;
 
 public class HelpActivity extends ActionBarActivity {
 
-    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
-        mToolbar = (Toolbar)(findViewById(R.id.tool_bar));
-        setSupportActionBar(mToolbar);
     }
 
     @Override

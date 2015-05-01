@@ -21,27 +21,17 @@
         android:src="@drawable/torch"
         android:contentDescription="@string/torch_description"
         android:clickable="false"
-        android:layout_gravity="top|bottom"
+        android:layout_gravity="top"
         android:cropToPadding="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:paddingTop="40dp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/current_torch"
-            android:id="@+id/current_torch_title"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"
-            android:layout_alignTop="@+id/float_act_button"
-            android:typeface="sans"
-            android:textColor="@color/primarytext" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/float_act_button"
@@ -50,24 +40,18 @@
             fab:fab_icon="@drawable/ic_fab_star"
             fab:fab_colorNormal="@color/darkprimary"
             fab:fab_colorPressed="@color/primary"
+            android:layout_marginBottom="16dp"
+            android:paddingRight="10dp"
             android:cropToPadding="false"
-            android:padding="16dp"
-            android:layout_gravity="right"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginRight="16dp" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
+            android:layout_height="match_parent"
+            android:text="@string/current_torch"
             android:id="@+id/currtorch_textview"
-            android:layout_below="@+id/current_torch_title"
-            android:layout_centerHorizontal="true"
-            android:textSize="20dp"
-            android:textColor="@color/primarytext" />
-
-    </RelativeLayout>
+            android:textSize="20sp"
+            android:layout_margin="10dp" />
+    </LinearLayout>
 
 </LinearLayout>

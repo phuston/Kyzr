@@ -76,8 +76,4 @@ public class NetworksClient {
         return "phone_id=" + URLEncoder.encode(phoneID, "UTF-8");
     }
 
-    public String formatStats(String phoneID) throws UnsupportedEncodingException {
-        return "phone_id=" + URLEncoder.encode(phoneID, "UTF-8");
-    }
-
 }
