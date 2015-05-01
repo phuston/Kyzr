@@ -49,7 +49,7 @@ public class TorchFragment extends Fragment {
         mFloatActButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), HelpActivity.class);
+                Intent i = new Intent(getActivity(), StatsActivity.class);
                 startActivity(i);
             }
         });
@@ -58,7 +58,7 @@ public class TorchFragment extends Fragment {
     }
 
     public void updateCurrTorch(String currTorchID){
-        mCurrTorchTextview.setText("Current torch: \n" + currTorchID);
+        mCurrTorchTextview.setText(currTorchID);
     }
 
     public void updateLocation(Location lastLocation) {
