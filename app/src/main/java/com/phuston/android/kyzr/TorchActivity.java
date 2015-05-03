@@ -177,7 +177,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // record 0 contains the MIME type, record 1 is the AAR, if present
         mTorchFrag.addTorch(new String(msg.getRecords()[0].getPayload()));
 
-        turnFlashlightOn();
+//        turnFlashlightOn();
 
         if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
@@ -197,7 +197,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             } catch(Exception e ) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            turnFlashlightOff();
+//            turnFlashlightOff();
         }
 
     }

@@ -125,7 +125,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
                     startTorchActivity(extras);
                 } else {
                     mNewUser.setText("");
-                    Toast.makeText(this, "User already exists.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Username already exists.", Toast.LENGTH_LONG).show();
                 }
             }
         } else {
