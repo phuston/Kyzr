@@ -28,6 +28,8 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
     private EditText mNewUser;
 
+    private boolean mKillActivity = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Toast.makeText(this, "Please enable location services for Kyzr", Toast.LENGTH_LONG).show();
             startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }
 
@@ -72,6 +75,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             if(response.equals("True")) {
                 Bundle extras = new Bundle();
                 extras.putBoolean("Create User", false);
+                mKillActivity = true;
                 startTorchActivity(extras);
             }  else if(!response.equals("False") && !response.equals("Invalid Search")) {
                 connectionError();
@@ -104,36 +108,37 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
     public void onPause() {
         super.onPause();
-        finish();
+        if(mKillActivity) {
+            finish();
+        }
     }
 
     public void onClick(View v) {
-        String newUsername = mNewUser.getText().toString();
-        newUsername.replace("[^A-Za-z0-9_-]", "");
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if(!newUsername.equals("")) {
-            VerifyThread vt = new VerifyThread();
-            String response = "";
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            String newUsername = mNewUser.getText().toString();
+            newUsername.replace("[^A-Za-z0-9_-]", "");
 
-            try {
-                // Make Request In Next Activity
-                String formattedRequest = mNetworkClient.formatVerify(newUsername);
-                response = vt.execute("verify", formattedRequest).get();
-            } catch(Exception e) {
-                response = e.toString();
-            }
+            if (!newUsername.equals("")) {
+                VerifyThread vt = new VerifyThread();
+                String response = "";
 
-            if(response.equals("False")) {
-                Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
-                Bundle extras = new Bundle();
-                extras.putString("Username", newUsername);
-                extras.putBoolean("Create User", true);
-                startTorchActivity(extras);
-            } else if(!response.equals("False") && !response.equals("Invalid Search")) {
-                connectionError();
+                if (response.equals("False")) {
+                    Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
+                    Bundle extras = new Bundle();
+                    extras.putString("Username", newUsername);
+                    extras.putBoolean("Create User", true);
+                    startTorchActivity(extras);
+                } else if (!response.equals("False") && !response.equals("Invalid Search")) {
+                    connectionError();
+                } else {
+                    mNewUser.setText("");
+                    Toast.makeText(this, "User already exists.", Toast.LENGTH_LONG).show();
+                }
             } else {
-                mNewUser.setText("");
-                Toast.makeText(this, "User already exists.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please enable your location services", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             }
         }
     }
