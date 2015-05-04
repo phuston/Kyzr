@@ -3,7 +3,7 @@
 
     <string name="app_name">Kyzr</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Help</string>
     <string name="kyzr_title">Kyzr</string>
     <string name="recieved_ids">Your IDs:</string>
     <string name="no_location_detected">No location detected.</string>
