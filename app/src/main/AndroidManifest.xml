@@ -41,7 +41,8 @@
 
         <activity
             android:name=".WelcomeActivity"
-            android:label="Kyzr">
+            android:label="Kyzr"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,12 +53,14 @@
 
         <activity
             android:name=".HelpActivity"
-            android:label="@string/title_activity_help" >
+            android:label="@string/title_activity_help"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".StatsActivity"
-            android:label="@string/title_activity_stats" >
+            android:label="@string/title_activity_stats"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
