@@ -56,16 +56,12 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
     protected Boolean mRequestingLocationUpdates;
     protected String mLastUpdateTime;
 
-    private boolean mHasFlash;
-    private boolean mIsFlashOn;
-    private Camera mCamera;
-    private Camera.Parameters mParams;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_torch);
 
+        // Connects activity to child fragment
         mTorchFrag=(TorchFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
 
         if (mTorchFrag == null) {
@@ -76,33 +72,31 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
                     .commit();
         }
 
+
+        // Initializations for NFC adapter
         mNfcAdapter=NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
+        // Initializations for GPS
         mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
-        updateValuesFromBundle(savedInstanceState);
-
         buildGoogleApiClient();
 
+        // Initialization for NetworksClient
+        updateValuesFromBundle(savedInstanceState);
         mNetworkClient = new NetworksClient();
-
-        mHasFlash = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-        if(mHasFlash) {
-            mCamera = Camera.open();
-            mParams = mCamera.getParameters();
-        }
-
     }
 
+
+    /**
+     * Methods for accessing database from server
+     */
     public void getCurrTorch() {
 
         String response = "";
@@ -152,6 +146,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         }
     }
 
+
     /**
      * Implementation for the CreateNdefMessageCallback interface
      */
@@ -166,6 +161,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         return msg;
     }
 
+
     /**
      * Parses the NDEF Message from the intent and prints to the TextView
      */
@@ -176,8 +172,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
         mTorchFrag.addTorch(new String(msg.getRecords()[0].getPayload()));
-
-//        turnFlashlightOn();
 
         if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
@@ -197,9 +191,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             } catch(Exception e ) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
-//            turnFlashlightOff();
         }
-
     }
 
     /**
@@ -312,22 +304,60 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+
     /**
-     * Methods for flashlight control
+     * Stores activity data in the Bundle.
      */
-    private void turnFlashlightOn() {
-        mParams = mCamera.getParameters();
-        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        mCamera.setParameters(mParams);
-        mCamera.startPreview();
-        mIsFlashOn = true;
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
+        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
-    private void turnFlashlightOff() {
-        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-        mCamera.setParameters(mParams);
-        mCamera.stopPreview();
-        mIsFlashOn = false;
+    /**
+     * Thread for accessing the server.
+     */
+    public class AccessThread extends AsyncTask<String, Void, String> {
+
+        public String doInBackground(String... params) {
+
+            if(mNetworkClient != null) {
+                String method = params[0];
+                String request = params[1];
+
+                URL sendTo = null;
+
+                try {
+                    switch (method) {
+                        case "add":
+                            sendTo = new URL("http://thekyzrproject.com/dbadd");
+                            break;
+                        case "create":
+                            sendTo = new URL("http://thekyzrproject.com/newuser");
+                            break;
+                        case "stats":
+                            sendTo = new URL("http://thekyzrproject.com/stats");
+                            break;
+                        case "currtorch":
+                            sendTo = new URL("http://thekyzrproject.com/currtorch");
+                            break;
+                    }
+                } catch (MalformedURLException e) {
+                    return "Error Occurred";
+                }
+
+                try {
+                    if(sendTo != null) {
+                        return mNetworkClient.access(request, sendTo);
+                    }
+                } catch(Exception e) {
+                    return e.toString();
+                }
+            }
+
+            return "Request Failed";
+        }
     }
 
     //Overriding activity lifecycle methods
@@ -371,62 +401,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
-        }
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
-    }
-
-    /**
-     * Stores activity data in the Bundle.
-     */
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
-        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
-        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    public class AccessThread extends AsyncTask<String, Void, String> {
-
-        public String doInBackground(String... params) {
-
-            if(mNetworkClient != null) {
-                String method = params[0];
-                String request = params[1];
-
-                URL sendTo = null;
-
-                try {
-                    switch (method) {
-                        case "add":
-                            sendTo = new URL("http://thekyzrproject.com/dbadd");
-                            break;
-                        case "create":
-                            sendTo = new URL("http://thekyzrproject.com/newuser");
-                            break;
-                        case "stats":
-                            sendTo = new URL("http://thekyzrproject.com/stats");
-                            break;
-                        case "currtorch":
-                            sendTo = new URL("http://thekyzrproject.com/currtorch");
-                            break;
-                    }
-                } catch (MalformedURLException e) {
-                    return "Error Occurred";
-                }
-
-                try {
-                    if(sendTo != null) {
-                        return mNetworkClient.access(request, sendTo);
-                    }
-                } catch(Exception e) {
-                    return e.toString();
-                }
-            }
-
-            return "Request Failed";
         }
     }
 }

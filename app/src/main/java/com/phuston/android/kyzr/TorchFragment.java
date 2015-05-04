@@ -75,8 +75,8 @@ public class TorchFragment extends Fragment {
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_help, menu);
         super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.menu_help, menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -99,16 +99,7 @@ public class TorchFragment extends Fragment {
         mCurrTorchTextview.setText(currTorchID);
     }
 
-    public void updateLocation(Location lastLocation) {
-        //TODO: Implement this
-    }
-
-    public void addTorch(String ID) {
-        //TODO: Implement adding torch
-    }
-
     public String getTorchID() {
         return mAndroid_id;
     }
-
 }
