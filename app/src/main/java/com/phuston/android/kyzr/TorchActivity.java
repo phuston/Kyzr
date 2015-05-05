@@ -171,7 +171,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
-        mTorchFrag.addTorch(new String(msg.getRecords()[0].getPayload()));
 
         if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
@@ -262,7 +261,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            mTorchFrag.updateLocation(mCurrentLocation);
             addUser();
         }
 
@@ -278,7 +276,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        mTorchFrag.updateLocation(mCurrentLocation);
     }
 
     @Override

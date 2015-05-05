@@ -9,6 +9,7 @@ public class Stats {
     private String DISTANCE;
     private String NUMTRANSACTION;
     private String TORCH;
+    private String CURRENTOWNER;
 
     public String getUSERNAME() {
         return USERNAME;
@@ -28,5 +29,9 @@ public class Stats {
 
     public String getTORCH() {
         return TORCH;
+    }
+
+    public String getCURRENTOWNER() {
+        return CURRENTOWNER;
     }
 }

@@ -27,7 +27,6 @@ public class TorchFragment extends Fragment {
 
     private String mAndroid_id;
     protected Toolbar mToolbar;
-    private String mCurrTorchID;
 
     protected FloatingActionButton mFloatActButton;
     protected TextView mCurrTorchTextview;

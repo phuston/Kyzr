@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,17 +30,23 @@ public class StatsActivity extends ActionBarActivity {
     private Stats mStats1;
     private Stats mStats2;
 
+    private Toolbar mToolbar;
+
     private TextView mUsernameTextview, mPhoneIDTextview, mDistance1Textview, mNumTrans1Textview, mCurrentOwnerTextview;
+
+    private TextView mCurrTorchTitleTextview, mDistance2Textview, mNumTrans2Textview, mCurrentOwner2Textview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
+        mToolbar = (Toolbar)findViewById(R.id.tool_bar);
+        setSupportActionBar(mToolbar);
+
         mNetworkClient = new NetworksClient();
         mGson = new GsonBuilder().create();
         mAndroid_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
 
         mUsernameTextview = (TextView)findViewById(R.id.username_textview);
         mPhoneIDTextview = (TextView)findViewById(R.id.phoneid_textview);
@@ -47,31 +54,13 @@ public class StatsActivity extends ActionBarActivity {
         mNumTrans1Textview = (TextView)findViewById(R.id.numtransactions1_textview);
         mCurrentOwnerTextview = (TextView)findViewById(R.id.currentowner1_textview);
 
+
+        mDistance2Textview = (TextView)findViewById(R.id.distance2_textview);
+        mNumTrans2Textview = (TextView)findViewById(R.id.numtransactions2_textview);
+        mCurrentOwner2Textview = (TextView)findViewById(R.id.currentowner2_textview);
+        mCurrTorchTitleTextview = (TextView)findViewById(R.id.currtorchtitle_textview);
+
         getStats();
-
-        mUsernameTextview.setText(mStats1.getUSERNAME());
-        mPhoneIDTextview.setText(mAndroid_id);
-        mDistance1Textview.setText(mStats1.getDISTANCE());
-        mNumTrans1Textview.setText(mStats1.getNUMTRANSACTION());
-        mCurrentOwnerTextview.setText(mStats1.getTORCH());
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_stats, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void getStats(){
@@ -85,9 +74,9 @@ public class StatsActivity extends ActionBarActivity {
             e.toString();
         }
 
-        Log.e(TAG, response);
-
         mStats1 = mGson.fromJson(response, Stats.class);
+
+        Log.i(TAG, response);
 
         String response2 = "";
         try {
@@ -100,8 +89,24 @@ public class StatsActivity extends ActionBarActivity {
         }
 
         mStats2 = mGson.fromJson(response2, Stats.class);
+
+        Log.i(TAG, response2);
+
+        UpdateStats();
     }
 
+    public void UpdateStats(){
+        mUsernameTextview.setText(mStats1.getUSERNAME());
+        mPhoneIDTextview.setText(mAndroid_id);
+        mDistance1Textview.setText(mStats1.getDISTANCE());
+        mNumTrans1Textview.setText(mStats1.getNUMTRANSACTION());
+        mCurrentOwnerTextview.setText(mStats1.getCURRENTOWNER());
+
+        mCurrTorchTitleTextview.setText(mStats2.getUSERNAME() + "\'s Torch");
+        mDistance2Textview.setText(mStats2.getDISTANCE());
+        mNumTrans2Textview.setText(mStats2.getNUMTRANSACTION());
+        mCurrentOwner2Textview.setText(mStats2.getCURRENTOWNER());
+    }
 
     public class AccessThread extends AsyncTask<String, Void, String> {
 
