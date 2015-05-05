@@ -91,6 +91,8 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // Initialization for NetworksClient
         updateValuesFromBundle(savedInstanceState);
         mNetworkClient = new NetworksClient();
+
+        getCurrTorch();
     }
 
 
