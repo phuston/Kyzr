@@ -120,29 +120,34 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             String newUsername = mNewUser.getText().toString();
             String formatUser = newUsername.replace("[^A-Za-z0-9_-]", "");
 
-            if (!newUsername.equals("")) {
-                VerifyThread vt = new VerifyThread();
-                String response = "";
+            if(newUsername.length() < 12){
+                if (!newUsername.equals("")) {
+                    VerifyThread vt = new VerifyThread();
+                    String response = "";
 
-                try {
-                    // Make Request In Next Activity
-                    String formattedRequest = mNetworkClient.formatVerify(newUsername);
-                    response = vt.execute("verify", formattedRequest).get();
-                } catch (Exception e) {
-                    response = e.toString();
-                }
+                    try {
+                        // Make Request In Next Activity
+                        String formattedRequest = mNetworkClient.formatVerify(newUsername);
+                        response = vt.execute("verify", formattedRequest).get();
+                    } catch (Exception e) {
+                        response = e.toString();
+                    }
 
-                if (response.equals("False")) {
-                    Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
-                    Bundle extras = new Bundle();
-                    extras.putString("Username", formatUser);
-                    extras.putBoolean("Create User", true);
-                    startTorchActivity(extras);
-                } else {
-                    mNewUser.setText("");
-                    Toast.makeText(this, "Username already exists.", Toast.LENGTH_LONG).show();
+                    if (response.equals("False")) {
+                        Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
+                        Bundle extras = new Bundle();
+                        extras.putString("Username", formatUser);
+                        extras.putBoolean("Create User", true);
+                        startTorchActivity(extras);
+                    } else {
+                        mNewUser.setText("");
+                        Toast.makeText(this, "Username already exists.", Toast.LENGTH_LONG).show();
+                    }
                 }
+            } else {
+                Toast.makeText(this, "Torch name cannot exceed 12 characters.", Toast.LENGTH_LONG).show();
             }
+
         } else {
             Toast.makeText(this, "Please enable your location services", Toast.LENGTH_LONG).show();
             startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
