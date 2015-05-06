@@ -79,8 +79,27 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
                 extras.putBoolean("Create User", false);
                 mKillActivity = true;
                 startTorchActivity(extras);
+            }  else if(!response.equals("False") && !response.equals("Invalid Search")) {
+                connectionError();
             }
         }
+    }
+
+
+    public void connectionError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Cannot Connect to Kyzr");
+        builder.setMessage("Cannot find the server. This could be a problem on our end. Make sure you have internet enabled as well.");
+        builder.setNegativeButton("Exit Kyzr", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                return;
+            }
+        });
+
+        builder.create().show();
     }
 
     public void displayLocationDialog() {
@@ -176,6 +195,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             displayLocationDialog();
         }
     }
+
     public void onClick(View v) {
         submitInfo();
     }
