@@ -3,9 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.phuston.android.kyzr.HelpActivity"
+    tools:context="com.phuston.android.kyzr.StatsActivity"
     android:background="@color/accent"
-    android:elevation="5dp"
     android:textAlignment="center">
 
     <include
@@ -50,7 +49,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/primarytext" />
 
@@ -75,7 +74,8 @@
                 android:layout_alignTop="@+id/distancetitle1_textview"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="30dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="@color/primarytext" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,7 +99,8 @@
                 android:layout_alignLeft="@+id/distance1_textview"
                 android:layout_alignStart="@+id/distance1_textview"
                 android:layout_alignParentRight="true"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="@color/primarytext" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -123,7 +124,102 @@
                 android:layout_alignLeft="@+id/distance1_textview"
                 android:layout_alignStart="@+id/distance1_textview"
                 android:layout_alignParentRight="true"
+                android:textSize="16sp"
+                android:textColor="@color/primarytext" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="fill_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/your_torch"
+                android:id="@+id/currtorchtitle_textview"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primarytext" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance_stat"
+                android:id="@+id/distancetitle2_textview"
+                android:layout_below="@+id/currtorchtitle_textview"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/primarytext"
                 android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/distance2_textview"
+                android:layout_alignTop="@+id/distancetitle2_textview"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:textSize="16sp"
+                android:textColor="@color/primarytext" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/num_transactions"
+                android:id="@+id/numtransactionstitle2_textview"
+                android:layout_below="@+id/distance2_textview"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/primarytext"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/numtransactions2_textview"
+                android:layout_alignTop="@+id/numtransactionstitle2_textview"
+                android:layout_alignLeft="@+id/distance2_textview"
+                android:layout_alignStart="@+id/distance2_textview"
+                android:layout_alignParentRight="true"
+                android:textSize="16sp"
+                android:textColor="@color/primarytext" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/current_owner"
+                android:id="@+id/currentownertitle2_textview"
+                android:layout_below="@+id/numtransactionstitle2_textview"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/primarytext"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/currentowner2_textview"
+                android:layout_alignTop="@+id/currentownertitle2_textview"
+                android:layout_alignLeft="@+id/distance2_textview"
+                android:layout_alignStart="@+id/distance2_textview"
+                android:layout_alignParentRight="true"
+                android:textSize="16sp"
+                android:textColor="@color/primarytext" />
 
 
         </RelativeLayout>

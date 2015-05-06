@@ -10,6 +10,8 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,16 +40,16 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         mNetworkClient = new NetworksClient();
         mAndroid_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        checkIfIdExists();
-
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast.makeText(this, "Please enable location services for Kyzr", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            displayLocationDialog();
+        } else {
+            checkIfIdExists();
         }
 
         mNewUser = (EditText) findViewById(R.id.etTorchName);
+
         Button submit = (Button) findViewById(R.id.bSubmitTorch);
 
         submit.setOnClickListener(this);
@@ -64,7 +66,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
         if(!initialVerify.equals("")) {
             VerifyThread vt = new VerifyThread();
-            String response = "";
+            String response;
 
             try {
                 response = vt.execute("verify", initialVerify).get();
@@ -83,6 +85,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         }
     }
 
+
     public void connectionError() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -97,6 +100,30 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         });
 
         builder.create().show();
+    }
+
+    public void displayLocationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Location Not Available");
+        builder.setMessage("In order to collect information about each torch transfer, Kyzr must have access to your location.");
+        builder.setPositiveButton("Enable Location", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+
+        builder.setNegativeButton("Exit Kyzr", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                return;
+            }
+        });
+
+        builder.create().show();
+
     }
 
     public void startTorchActivity(Bundle extras) {
@@ -118,34 +145,59 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    public void onClick(View v) {
+    public void onResume() {
+        super.onResume();
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            displayLocationDialog();
+        } else {
+            checkIfIdExists();
+        }
+    }
+
+    public void submitInfo() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             String newUsername = mNewUser.getText().toString();
-            newUsername.replace("[^A-Za-z0-9_-]", "");
+            String formatUser = newUsername.replace("[^A-Za-z0-9_-]", "");
 
-            if (!newUsername.equals("")) {
-                VerifyThread vt = new VerifyThread();
-                String response = "";
+            if(newUsername.length() < 12){
+                if (!newUsername.equals("")) {
+                    VerifyThread vt = new VerifyThread();
+                    String response = "";
 
-                if (response.equals("False")) {
-                    Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
-                    Bundle extras = new Bundle();
-                    extras.putString("Username", newUsername);
-                    extras.putBoolean("Create User", true);
-                    startTorchActivity(extras);
-                } else if (!response.equals("False") && !response.equals("Invalid Search")) {
-                    connectionError();
-                } else {
-                    mNewUser.setText("");
-                    Toast.makeText(this, "User already exists.", Toast.LENGTH_LONG).show();
+                    try {
+                        // Make Request In Next Activity
+                        String formattedRequest = mNetworkClient.formatVerify(newUsername);
+                        response = vt.execute("verify", formattedRequest).get();
+                    } catch (Exception e) {
+                        response = e.toString();
+                    }
+
+                    if (response.equals("False")) {
+                        Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
+                        Bundle extras = new Bundle();
+                        extras.putString("Username", formatUser);
+                        extras.putBoolean("Create User", true);
+                        startTorchActivity(extras);
+                    } else {
+                        mNewUser.setText("");
+                        Toast.makeText(this, "Username already exists.", Toast.LENGTH_LONG).show();
+                    }
                 }
             } else {
-                Toast.makeText(this, "Please enable your location services", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                Toast.makeText(this, "Torch name cannot exceed 12 characters.", Toast.LENGTH_LONG).show();
             }
+
+        } else {
+            displayLocationDialog();
         }
+    }
+
+    public void onClick(View v) {
+        submitInfo();
     }
 
     public class VerifyThread extends AsyncTask<String, Void, String> {

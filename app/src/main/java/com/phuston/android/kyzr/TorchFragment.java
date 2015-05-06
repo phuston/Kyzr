@@ -11,6 +11,9 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,7 +27,6 @@ public class TorchFragment extends Fragment {
 
     private String mAndroid_id;
     protected Toolbar mToolbar;
-    private String mCurrTorchID;
 
     protected FloatingActionButton mFloatActButton;
     protected TextView mCurrTorchTextview;
@@ -37,6 +39,7 @@ public class TorchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.kyzr_title);
         mAndroid_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -70,20 +73,32 @@ public class TorchFragment extends Fragment {
         return v;
     }
 
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.menu_help, menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_settings:
+                try {
+                    Intent activityStarter = new Intent(getActivity().getApplicationContext(), Class.forName("com.phuston.android.kyzr.HelpActivity"));
+                    startActivity(activityStarter);
+                } catch(ClassNotFoundException e) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Could not find activity to start.", Toast.LENGTH_LONG).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
+
+    }
+
     public void updateCurrTorch(String currTorchID){
         mCurrTorchTextview.setText(currTorchID);
-    }
-
-    public void updateLocation(Location lastLocation) {
-        //TODO: Implement this
-    }
-
-    public void addTorch(String ID) {
-        //TODO: Implement adding torch
     }
 
     public String getTorchID() {
         return mAndroid_id;
     }
-
 }

@@ -1,7 +1,9 @@
 package com.phuston.android.kyzr;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -13,6 +15,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
@@ -56,16 +59,12 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
     protected Boolean mRequestingLocationUpdates;
     protected String mLastUpdateTime;
 
-    private boolean mHasFlash;
-    private boolean mIsFlashOn;
-    private Camera mCamera;
-    private Camera.Parameters mParams;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_torch);
 
+        // Connects activity to child fragment
         mTorchFrag=(TorchFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
 
         if (mTorchFrag == null) {
@@ -76,33 +75,68 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
                     .commit();
         }
 
+
+        // Initializations for NFC adapter
         mNfcAdapter=NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
+
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
+        checkNFC();
+
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
+        // Initializations for GPS
         mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
-        updateValuesFromBundle(savedInstanceState);
-
         buildGoogleApiClient();
 
+        // Initialization for NetworksClient
+        updateValuesFromBundle(savedInstanceState);
         mNetworkClient = new NetworksClient();
-
-        mHasFlash = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-        if(mHasFlash) {
-            mCamera = Camera.open();
-            mParams = mCamera.getParameters();
-        }
-
     }
 
+
+    public void checkNFC() {
+        if(!mNfcAdapter.isEnabled()) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("NFC Disabled");
+            builder.setMessage("In order to use Kyzr, you must have NFC enabled. Otherwise, you won't be able to transfer torches! Click okay to enable NFC!");
+            builder.setPositiveButton("Enable NFC", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent getNFC;
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        getNFC = new Intent(android.provider.Settings.ACTION_NFC_SETTINGS);
+                    } else {
+                        getNFC = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+                    }
+
+                    startActivity(getNFC);
+                }
+            });
+
+            builder.setNegativeButton("Exit Kyzr", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                    return;
+                }
+            });
+
+            builder.create().show();
+        }
+    }
+
+
+    /**
+     * Methods for accessing database from server
+     */
     public void getCurrTorch() {
 
         String response = "";
@@ -146,11 +180,13 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
                     Toast.makeText(this, "Could not create user", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Successful!", Toast.LENGTH_LONG).show();
+                    getCurrTorch();
                 }
 
             }
         }
     }
+
 
     /**
      * Implementation for the CreateNdefMessageCallback interface
@@ -166,6 +202,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         return msg;
     }
 
+
     /**
      * Parses the NDEF Message from the intent and prints to the TextView
      */
@@ -175,9 +212,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
-        mTorchFrag.addTorch(new String(msg.getRecords()[0].getPayload()));
-
-//        turnFlashlightOn();
 
         if(mNetworkClient != null) {
             String receivedId = new String(msg.getRecords()[0].getPayload());
@@ -197,9 +231,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             } catch(Exception e ) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
-//            turnFlashlightOff();
         }
-
     }
 
     /**
@@ -270,7 +302,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            mTorchFrag.updateLocation(mCurrentLocation);
             addUser();
         }
 
@@ -286,7 +317,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        mTorchFrag.updateLocation(mCurrentLocation);
     }
 
     @Override
@@ -312,71 +342,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    /**
-     * Methods for flashlight control
-     */
-    private void turnFlashlightOn() {
-        mParams = mCamera.getParameters();
-        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        mCamera.setParameters(mParams);
-        mCamera.startPreview();
-        mIsFlashOn = true;
-    }
-
-    private void turnFlashlightOff() {
-        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-        mCamera.setParameters(mParams);
-        mCamera.stopPreview();
-        mIsFlashOn = false;
-    }
-
-    //Overriding activity lifecycle methods
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-        // Check to see that the Activity started due to an Android Beam
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-        }
-        getCurrTorch();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
-        }
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        // onResume gets called after this to handle the intent
-        setIntent(intent);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
-    }
 
     /**
      * Stores activity data in the Bundle.
@@ -388,6 +353,9 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    /**
+     * Thread for accessing the server.
+     */
     public class AccessThread extends AsyncTask<String, Void, String> {
 
         public String doInBackground(String... params) {
@@ -427,6 +395,53 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             }
 
             return "Request Failed";
+        }
+    }
+
+    //Overriding activity lifecycle methods
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+        // Check to see that the Activity started due to an Android Beam
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processIntent(getIntent());
+        } else {
+            checkNFC();
+        }
+
+        getCurrTorch();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        // onResume gets called after this to handle the intent
+        setIntent(intent);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
     }
 }

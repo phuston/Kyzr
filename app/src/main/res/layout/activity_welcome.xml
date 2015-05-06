@@ -34,6 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:background="@color/edittextback"
+            android:maxLines="1"
             android:hint="@string/intro_hint"
             android:gravity="center_horizontal"
             android:elevation="5dp" />

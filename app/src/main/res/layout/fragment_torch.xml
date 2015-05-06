@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.phuston.android.kyzr.TorchFragment"
-    android:background="@color/accent"
-    android:elevation="5dp">
+    android:background="@color/accent">
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"
@@ -51,7 +50,10 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textColor="@color/primarytext"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:typeface="normal"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -59,8 +61,9 @@
             android:id="@+id/currtorch_textview"
             android:layout_below="@+id/currtorchtitle_textview"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:textSize="16sp" />
+            android:textSize="20sp"
+            android:typeface="monospace"
+            android:textColor="@color/primarytext" />
 
     </RelativeLayout>
 </LinearLayout>

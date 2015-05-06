@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context="com.phuston.android.kyzr.HelpActivity"
     android:background="@color/accent"
-    android:elevation="5dp"
     android:textAlignment="center">
 
     <include
@@ -30,7 +29,8 @@
             android:paddingTop="30dp"
             android:paddingBottom="30dp"
             android:src="@drawable/ic_help_black_48dp"
-            android:contentDescription="help_icon" />
+            android:contentDescription="help_icon"
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/help_textview"
@@ -65,7 +65,8 @@
             android:paddingTop="30dp"
             android:paddingBottom="30dp"
             android:src="@drawable/ic_info_black_48dp"
-            android:contentDescription="help_icon" />
+            android:contentDescription="help_icon"
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/about_textview"
