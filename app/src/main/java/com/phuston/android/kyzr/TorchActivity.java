@@ -85,6 +85,23 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             return;
         }
 
+        checkNFC();
+
+        mNfcAdapter.setNdefPushMessageCallback(this, this);
+
+        // Initializations for GPS
+        mRequestingLocationUpdates = true;
+        mLastUpdateTime = "";
+
+        buildGoogleApiClient();
+
+        // Initialization for NetworksClient
+        updateValuesFromBundle(savedInstanceState);
+        mNetworkClient = new NetworksClient();
+    }
+
+
+    public void checkNFC() {
         if(!mNfcAdapter.isEnabled()) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -113,20 +130,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
             });
 
             builder.create().show();
-
-
         }
-        mNfcAdapter.setNdefPushMessageCallback(this, this);
-
-        // Initializations for GPS
-        mRequestingLocationUpdates = true;
-        mLastUpdateTime = "";
-
-        buildGoogleApiClient();
-
-        // Initialization for NetworksClient
-        updateValuesFromBundle(savedInstanceState);
-        mNetworkClient = new NetworksClient();
     }
 
 
@@ -406,7 +410,10 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // Check to see that the Activity started due to an Android Beam
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
+        } else {
+            checkNFC();
         }
+        
         getCurrTorch();
     }
 
