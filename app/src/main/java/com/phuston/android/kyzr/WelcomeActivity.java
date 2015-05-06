@@ -84,14 +84,19 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
     }
 
     public void connectionError() {
-        final AlertDialog at = new AlertDialog.Builder(this).setTitle("Can't Connect to Kyzr")
-                .setMessage("For some reason, there was an error connecting to server. You will be unable to access Kyzr and pass torches. Please try again later.")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Cannot Connect to Kyzr");
+        builder.setMessage("Cannot find the server. This could be a problem on our end. Make sure you have internet enabled as well.");
+        builder.setNegativeButton("Exit Kyzr", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                return;
+            }
+        });
+
+        builder.create().show();
     }
 
     public void startTorchActivity(Bundle extras) {
