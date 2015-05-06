@@ -1,7 +1,9 @@
 package com.phuston.android.kyzr;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -13,6 +15,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
@@ -76,9 +79,42 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // Initializations for NFC adapter
         mNfcAdapter=NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
+
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
+        }
+
+        if(!mNfcAdapter.isEnabled()) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("NFC Disabled");
+            builder.setMessage("In order to use Kyzr, you must have NFC enabled. Otherwise, you won't be able to transfer torches! Click okay to enable NFC!");
+            builder.setPositiveButton("Enable NFC", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent getNFC;
+                    if (Build.VERSION.SDK_INT >= 16) {
+                        getNFC = new Intent(android.provider.Settings.ACTION_NFC_SETTINGS);
+                    } else {
+                        getNFC = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+                    }
+
+                    startActivity(getNFC);
+                }
+            });
+
+            builder.setNegativeButton("Exit Kyzr", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                    return;
+                }
+            });
+
+            builder.create().show();
+
+
         }
         mNfcAdapter.setNdefPushMessageCallback(this, this);
 
