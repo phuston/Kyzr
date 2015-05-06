@@ -8,6 +8,8 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +48,19 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         }
 
         mNewUser = (EditText) findViewById(R.id.etTorchName);
+
+//        mNewUser.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+//                        i == KeyEvent.KEYCODE_ENTER) {
+//                    submitInfo();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
         Button submit = (Button) findViewById(R.id.bSubmitTorch);
 
         submit.setOnClickListener(this);
@@ -62,7 +77,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
         if(!initialVerify.equals("")) {
             VerifyThread vt = new VerifyThread();
-            String response = "";
+            String response;
 
             try {
                 response = vt.execute("verify", initialVerify).get();
@@ -98,12 +113,12 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    public void onClick(View v) {
+    public void submitInfo() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             String newUsername = mNewUser.getText().toString();
-            newUsername.replace("[^A-Za-z0-9_-]", "");
+            String formatUser = newUsername.replace("[^A-Za-z0-9_-]", "");
 
             if (!newUsername.equals("")) {
                 VerifyThread vt = new VerifyThread();
@@ -120,7 +135,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
                 if (response.equals("False")) {
                     Toast.makeText(this, "Welcome to Kyzr!", Toast.LENGTH_LONG).show();
                     Bundle extras = new Bundle();
-                    extras.putString("Username", newUsername);
+                    extras.putString("Username", formatUser);
                     extras.putBoolean("Create User", true);
                     startTorchActivity(extras);
                 } else {
@@ -132,6 +147,9 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this, "Please enable your location services", Toast.LENGTH_LONG).show();
             startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }
+    }
+    public void onClick(View v) {
+        submitInfo();
     }
 
     public class VerifyThread extends AsyncTask<String, Void, String> {

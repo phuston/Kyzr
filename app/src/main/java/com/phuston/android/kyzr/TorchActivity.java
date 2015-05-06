@@ -91,8 +91,6 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         // Initialization for NetworksClient
         updateValuesFromBundle(savedInstanceState);
         mNetworkClient = new NetworksClient();
-
-        getCurrTorch();
     }
 
 
@@ -142,6 +140,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
                     Toast.makeText(this, "Could not create user", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Successful!", Toast.LENGTH_LONG).show();
+                    getCurrTorch();
                 }
 
             }
