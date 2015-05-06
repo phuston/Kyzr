@@ -413,7 +413,7 @@ public class TorchActivity extends ActionBarActivity implements NfcAdapter.Creat
         } else {
             checkNFC();
         }
-        
+
         getCurrTorch();
     }
 

@@ -1,6 +1,8 @@
 package com.phuston.android.kyzr;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -38,13 +40,12 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         mNetworkClient = new NetworksClient();
         mAndroid_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        checkIfIdExists();
-
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Toast.makeText(this, "Please enable location services for Kyzr", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            displayLocationDialog();
+        } else {
+            checkIfIdExists();
         }
 
         mNewUser = (EditText) findViewById(R.id.etTorchName);
@@ -82,6 +83,30 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    public void displayLocationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Location Not Available");
+        builder.setMessage("In order to collect information about each torch transfer, Kyzr must have access to your location.");
+        builder.setPositiveButton("Enable Location", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+
+        builder.setNegativeButton("Exit Kyzr", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+                return;
+            }
+        });
+
+        builder.create().show();
+
+    }
+
     public void startTorchActivity(Bundle extras) {
         try {
             Intent activityStarter = new Intent(this, Class.forName("com.phuston.android.kyzr.TorchActivity"));
@@ -98,6 +123,17 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         super.onPause();
         if(mKillActivity) {
             finish();
+        }
+    }
+
+    public void onResume() {
+        super.onResume();
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            displayLocationDialog();
+        } else {
+            checkIfIdExists();
         }
     }
 
@@ -137,8 +173,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             }
 
         } else {
-            Toast.makeText(this, "Please enable your location services", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            displayLocationDialog();
         }
     }
     public void onClick(View v) {
