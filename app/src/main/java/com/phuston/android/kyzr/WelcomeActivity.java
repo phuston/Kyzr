@@ -49,18 +49,6 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
         mNewUser = (EditText) findViewById(R.id.etTorchName);
 
-//        mNewUser.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-//                        i == KeyEvent.KEYCODE_ENTER) {
-//                    submitInfo();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-
         Button submit = (Button) findViewById(R.id.bSubmitTorch);
 
         submit.setOnClickListener(this);
